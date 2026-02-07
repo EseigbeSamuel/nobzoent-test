@@ -1,25 +1,59 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import { FeedItem } from "../types/feed";
+import { useTheme } from "../themes/useTheme";
+import { memo } from "react";
 
-export default function FeedCard({ item }: { item: FeedItem }) {
+type Props = {
+  item: FeedItem;
+};
+
+function FeedCard({ item }: Props) {
+  const { colors, isDark } = useTheme();
+
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: item.download_url }} style={styles.image} />
-      <View style={styles.meta}>
-        <Text style={styles.author}>{item.author}</Text>
-        <Text style={styles.id}>ID: {item.id}</Text>
+    <View
+      style={[
+        styles.shadowWrapper,
+        {
+          shadowOpacity: isDark ? 0.35 : 0.2,
+          elevation: isDark ? 4 : 6,
+        },
+      ]}
+    >
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Image
+          source={{ uri: item.download_url }}
+          style={styles.image}
+          resizeMode="cover"
+          fadeDuration={150}
+        />
+
+        <View style={styles.meta}>
+          <Text style={[styles.author, { color: colors.textPrimary }]}>
+            {item.author}
+          </Text>
+          <Text style={[styles.id, { color: colors.textSecondary }]}>
+            ID: {item.id}
+          </Text>
+        </View>
       </View>
     </View>
   );
 }
 
+export default memo(FeedCard);
+
 const styles = StyleSheet.create({
-  card: {
+  shadowWrapper: {
     marginBottom: 16,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    shadowColor: "#000",
+    elevation: 6,
+  },
+  card: {
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "#fff",
-    elevation: 3,
   },
   image: {
     width: "100%",
@@ -34,6 +68,5 @@ const styles = StyleSheet.create({
   },
   id: {
     marginTop: 4,
-    color: "#666",
   },
 });
