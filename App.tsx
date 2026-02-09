@@ -42,6 +42,7 @@ export default function App() {
   const loadFeed = useCallback(async (pageNumber: number, append = false) => {
     try {
       setError(null);
+
       const result = await fetchFeed(pageNumber, LIMIT);
 
       setData((prev) => (append ? [...prev, ...result] : result));
@@ -63,7 +64,8 @@ export default function App() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    loadFeed(1);
+    setPage(1);
+    loadFeed(1, false);
   }, [loadFeed]);
 
   useEffect(() => {
